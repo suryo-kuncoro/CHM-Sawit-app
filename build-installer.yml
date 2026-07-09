@@ -1,0 +1,37 @@
+name: Build CHM Sawit Installer
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  build-installer:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v4
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4.1'
+
+      - name: Setup Pandoc (dibutuhkan beberapa dependency R)
+        uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install system libs untuk sf / terra / lidR (via rtools sudah termasuk di runner)
+        run: |
+          echo "Menggunakan R Windows binary packages, tidak perlu compile dari source"
+
+      - name: Jalankan build installer
+        shell: Rscript {0}
+        run: source("build_installer.R")
+
+      - name: Upload installer sebagai artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CHM-Sawit-Installer
+          path: build_installer/*.exe
+          if-no-files-found: error
