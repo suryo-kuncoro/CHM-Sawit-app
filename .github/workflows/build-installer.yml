@@ -25,6 +25,11 @@ jobs:
         run: |
           echo "Menggunakan R Windows binary packages, tidak perlu compile dari source"
 
+      - name: Install package dependencies aplikasi (dibutuhkan RInno untuk resolusi dependency)
+        shell: Rscript {0}
+        run: |
+          install.packages(c("shiny", "terra", "lidR", "sf", "rlas"))
+
       - name: Jalankan build installer
         shell: Rscript {0}
         run: source("build_installer.R")
