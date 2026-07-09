@@ -2,8 +2,7 @@
 # Dijalankan di GitHub Actions (windows-latest) untuk membuat installer .exe
 # yang membundel R portable + semua package yang dibutuhkan aplikasi Shiny.
 
-if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
-if (!requireNamespace("RInno", quietly = TRUE)) remotes::install_github("ficonsulting/RInno")
+if (!requireNamespace("RInno", quietly = TRUE)) install.packages("RInno")
 
 library(RInno)
 
