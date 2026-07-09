@@ -32,10 +32,9 @@ create_app(
   pkgs = c(
     "shiny", "terra", "lidR", "sf", "rlas"
   ),
-  include_R = TRUE,
-  R_version = paste0(R.version$major, ".", R.version$minor),
+  include_R = FALSE,   # fitur bundling R portable RInno sudah tidak berfungsi (URL installer usang)
   privilege = "lowest",
-  info_text = "Kalkulator Tinggi Kanopi Sawit dari data LiDAR atau Fotogrametri. Dibuat oleh Suryo Kuncoro."
+  info_text = "Kalkulator Tinggi Kanopi Sawit dari data LiDAR atau Fotogrametri. Dibuat oleh Suryo Kuncoro. Memerlukan R (>= 4.3) sudah terpasang di komputer ini."
 )
 
 compile_iss()
