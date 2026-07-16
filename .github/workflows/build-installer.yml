@@ -25,24 +25,25 @@ jobs:
         run: |
           echo "Menggunakan R Windows binary packages, tidak perlu compile dari source"
 
-      - name: Install package dependencies aplikasi (dibutuhkan RInno untuk resolusi dependency)
+      - name: Install package dependencies aplikasi (rlas & lidR dicabut dari CRAN 2026-06-09, dipasang dari GitHub r-lidar)
         shell: Rscript {0}
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          install.packages(c("shiny", "terra", "sf", "remotes"))
+
+          # rlas & lidR dicabut dari CRAN (rlas: masalah ASAN; lidR: bergantung ke rlas).
+          # Keduanya masih aktif dikembangkan di GitHub, jadi dipasang dari sana.
+          remotes::install_github("r-lidar/rlas", upgrade = "never")
+          remotes::install_github("r-lidar/lidR", upgrade = "never")
+
           pkgs <- c("shiny", "terra", "lidR", "sf", "rlas")
-
-          for (p in pkgs) {
-            if (!requireNamespace(p, quietly = TRUE)) {
-              cat("Memasang:", p, "\n")
-              install.packages(p, dependencies = TRUE, Ncpus = 2)
-            }
-          }
-
           missing <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
           if (length(missing) > 0) {
             stop(
               "Package berikut GAGAL terpasang setelah dicoba: ",
               paste(missing, collapse = ", "),
-              ". Cek log di atas untuk pesan error CRAN yang spesifik."
+              ". Cek log di atas untuk pesan error yang spesifik."
             )
           }
 
