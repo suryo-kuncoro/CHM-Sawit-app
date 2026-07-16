@@ -28,7 +28,26 @@ jobs:
       - name: Install package dependencies aplikasi (dibutuhkan RInno untuk resolusi dependency)
         shell: Rscript {0}
         run: |
-          install.packages(c("shiny", "terra", "lidR", "sf", "rlas"))
+          pkgs <- c("shiny", "terra", "lidR", "sf", "rlas")
+
+          for (p in pkgs) {
+            if (!requireNamespace(p, quietly = TRUE)) {
+              cat("Memasang:", p, "\n")
+              install.packages(p, dependencies = TRUE, Ncpus = 2)
+            }
+          }
+
+          missing <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
+          if (length(missing) > 0) {
+            stop(
+              "Package berikut GAGAL terpasang setelah dicoba: ",
+              paste(missing, collapse = ", "),
+              ". Cek log di atas untuk pesan error CRAN yang spesifik."
+            )
+          }
+
+          cat("\nSemua package berhasil terpasang:\n")
+          print(sapply(pkgs, function(p) as.character(packageVersion(p))))
 
       - name: Jalankan build installer
         shell: Rscript {0}
